@@ -1,6 +1,6 @@
-/// Game Title
-/// @Author
-/// @Date
+/// Fuzzy Logic
+/// @Author Michael Rainsford Ryan
+/// @Date 18/01/2022
 
 #ifdef _DEBUG 
 #pragma comment(lib,"sfml-graphics-d.lib") 
@@ -18,23 +18,11 @@
 
 #include <iostream>
 #include "Game.h"
-#include "TroopDeploymentCalculator.h"
 
 int main()
 {
-	//Game game;
-	//game.run();
-
-	int enemyTroops = 8;
-	float range = 25.0f;
-
-	int deploy = 
-		TroopDeploymentCalculator::getDeploymentAmount(enemyTroops, range);
-
-	std::cout << enemyTroops << " enemy troops spotted at distance of " << range << std::endl;
-	std::cout << "Deploying " << deploy << " troops." << std::endl;
-	
-	system("pause");
+	Game game;
+	game.run();
 
 	return EXIT_SUCCESS;
 }

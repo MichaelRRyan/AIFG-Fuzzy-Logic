@@ -47,6 +47,12 @@ void Game::processEvents()
 		{
 			m_window.close();
 		}
+
+		else if (sf::Event::KeyPressed == nextEvent.type)
+			processKeyPressed(nextEvent);
+
+		else if (sf::Event::MouseButtonPressed == nextEvent.type)
+			processMousePressed(nextEvent);
 	}
 }
 
@@ -67,6 +73,31 @@ void Game::render()
 	m_window.draw(m_circle);
 
 	m_window.display();
+}
+
+///////////////////////////////////////////////////////////////////
+void Game::processKeyPressed(sf::Event const& t_event)
+{
+	if (sf::Keyboard::Escape == t_event.key.code)
+		m_exitGame = true;
+}
+
+///////////////////////////////////////////////////////////////////
+void Game::processMousePressed(sf::Event const& t_event)
+{
+	system("cls");
+
+	// Random number of enemy troops between 1 and 30.
+	int enemyTroops = rand() % 30 + 1;
+
+	// Random enemy distance between 1 and 70.
+	float range = static_cast<float>(rand() % 70 + 1);
+
+	int deploy =
+		TroopDeploymentCalculator::getDeploymentAmount(enemyTroops, range);
+
+	std::cout << enemyTroops << " enemy troops spotted at distance of " << range << std::endl;
+	std::cout << "Deploying " << deploy << " troops." << std::endl;
 }
 
 ///////////////////////////////////////////////////////////////////

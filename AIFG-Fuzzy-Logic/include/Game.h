@@ -4,6 +4,9 @@
 /// @Author Michael Rainsford Ryan
 
 #include <SFML/Graphics.hpp>
+#include <iostream>
+
+#include "TroopDeploymentCalculator.h"
 
 /// <summary>
 /// The game's main class. Keeps the game running at 60
@@ -23,6 +26,9 @@ private:
 	void processEvents();
 	void update(sf::Time t_deltaTime);
 	void render();
+
+	void processKeyPressed(sf::Event const& t_event);
+	void processMousePressed(sf::Event const & t_event);
 
 	void setupShapes();
 
