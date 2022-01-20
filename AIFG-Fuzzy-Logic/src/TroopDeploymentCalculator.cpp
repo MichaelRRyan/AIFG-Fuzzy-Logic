@@ -1,5 +1,6 @@
 #include "TroopDeploymentCalculator.h"
 
+////////////////////////////////////////////////////////////////////////////////
 int TroopDeploymentCalculator::getDeploymentAmount(int t_enemyTroops, float t_enemyDistance)
 {
 	float troops = static_cast<float>(t_enemyTroops);
@@ -36,3 +37,5 @@ int TroopDeploymentCalculator::getDeploymentAmount(int t_enemyTroops, float t_en
 
     return static_cast<int>(deploy);
 }
+
+////////////////////////////////////////////////////////////////////////////////
