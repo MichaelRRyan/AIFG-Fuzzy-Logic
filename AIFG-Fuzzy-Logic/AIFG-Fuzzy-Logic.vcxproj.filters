@@ -24,12 +24,18 @@
     <ClCompile Include="src\Fuzzy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\TroopDeploymentCalculator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Game.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Fuzzy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\TroopDeploymentCalculator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
