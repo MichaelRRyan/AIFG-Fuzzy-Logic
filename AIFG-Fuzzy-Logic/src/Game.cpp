@@ -5,7 +5,11 @@
 ////////////////////////////////////////////////////////////////////////////////
 Game::Game() :
 	m_window{ sf::VideoMode::getDesktopMode(), "Basic Game", sf::Style::Fullscreen },
-	m_exitGame{ false }
+	m_exitGame{ false },
+	m_BACKGROUND_COLOR{ 255u, 159u, 119u },
+	m_CHARACTER_SIZE{ 96 },
+	m_ROCK_SIZE{ 112 },
+	m_SPRITE_SCALE{ 0.75f }
 {
 	// Sets the width and height of the view to have the same view size 
 	//		regardless of resolution.
@@ -17,11 +21,11 @@ Game::Game() :
 	m_window.setView(newView);
 
 	// Sets up the render texture.
-	m_charactersTexture.create(static_cast<unsigned>(m_worldSize.x),
+	m_renderTexture.create(static_cast<unsigned>(m_worldSize.x),
 							   static_cast<unsigned>(m_worldSize.y));
 
-	m_charactersTexture.setView(newView);
-	m_charactersSprite.setTexture(m_charactersTexture.getTexture());
+	m_renderTexture.setView(newView);
+	m_renderTextureSprite.setTexture(m_renderTexture.getTexture());
 
 	setupVisuals();
 	randomiseForce();
@@ -85,9 +89,9 @@ void Game::update(sf::Time t_deltaTime)
 ////////////////////////////////////////////////////////////////////////////////
 void Game::render()
 {
-	m_window.clear();
+	m_window.clear(m_BACKGROUND_COLOR);
 
-	m_window.draw(m_charactersSprite);
+	m_window.draw(m_renderTextureSprite);
 
 	m_window.display();
 }
@@ -122,48 +126,66 @@ void Game::randomiseForce()
 	std::cout << enemyTroops << " enemy troops spotted at distance of " << range << std::endl;
 	std::cout << "Deploying " << deploy << " troops." << std::endl;
 
-	drawForce(enemyTroops, deploy);
+	drawForce(enemyTroops, deploy, range);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Game::drawForce(int t_enemyTroops, int t_deployment)
+void Game::drawForce(int t_enemyTroops, int t_deployment, float t_distance)
 {
+	m_renderTexture.clear(sf::Color::Transparent);
 	int rowSize = 10;
 
+	// Draws a a few random rocks.
+	float size = (float)m_ROCK_SIZE * m_SPRITE_SCALE;
+	int rocks = rand() % 20;
+	for (int i = 0; i < rocks; ++i)
+	{
+		m_objectSprite.setTextureRect({ m_ROCK_SIZE * (rand() % 3), 96, 
+										m_ROCK_SIZE, m_ROCK_SIZE });
+
+		m_objectSprite.setPosition({ (float)(rand() % (int)m_worldSize.x), 
+									 (float)(rand() % (int)m_worldSize.y) });
+
+		m_renderTexture.draw(m_objectSprite);
+	}
+
 	// Draws the aliens.
-	m_charactersTexture.clear(sf::Color::Transparent);
-	m_objectSprite.setTextureRect({ 0, 0, 96, 96 });
+	size = (float)m_CHARACTER_SIZE * m_SPRITE_SCALE;
+	m_objectSprite.setTextureRect({ 0, 0, m_CHARACTER_SIZE, m_CHARACTER_SIZE });
 
 	sf::Vector2f basePos{ 32.0f, 32.0f };
+	sf::Vector2f target{ m_worldSize.x / 4.0f, m_worldSize.y / 2.0f };
+	basePos += (target - basePos) * (t_distance / 70.0f);
 
 	for (int i = 0; i < t_enemyTroops; ++i)
 	{
-		m_objectSprite.setPosition(basePos.x + 96.0f * (i % rowSize), 
-								   basePos.y + 96.0f * (i / rowSize));
+		m_objectSprite.setPosition(basePos.x + size * (i % rowSize),
+								   basePos.y + size * (i / rowSize));
 
 		m_objectSprite.move(static_cast<float>(rand() % 20 - 10),
 							static_cast<float>(rand() % 20 - 10));
 
-		m_charactersTexture.draw(m_objectSprite);
+		m_renderTexture.draw(m_objectSprite);
 	}
 
 	// Draws the humans.
-	basePos = { m_worldSize.x - 118.0f, m_worldSize.y - 118.0f };
+	basePos = { m_worldSize.x - 32.0f - size, m_worldSize.y - 32.0f - size };
 
 	for (int i = 0; i < t_deployment; ++i)
 	{
-		m_objectSprite.setTextureRect({ 96 + 96 * (rand() % 2), 0, 96, 96 });
+		m_objectSprite.setTextureRect({ m_CHARACTER_SIZE + m_CHARACTER_SIZE * (rand() % 2), 0, 
+										m_CHARACTER_SIZE, m_CHARACTER_SIZE });
 
-		m_objectSprite.setPosition(basePos.x - 96.0f * (i % rowSize),
-								   basePos.y - 96.0f * (i / rowSize));
+		m_objectSprite.setPosition(basePos.x - size * (i % rowSize),
+								   basePos.y - size * (i / rowSize));
 
 		m_objectSprite.move(static_cast<float>(rand() % 20 - 10),
 							static_cast<float>(rand() % 20 - 10));
 
-		m_charactersTexture.draw(m_objectSprite);
+		m_renderTexture.draw(m_objectSprite);
 	}
 
-	m_charactersTexture.display();
+	m_renderTexture.display();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -173,6 +195,8 @@ void Game::setupVisuals()
 		std::cout << "Error loading sprite sheet." << std::endl;
 	else
 		m_objectSprite.setTexture(m_spriteSheet);
+
+	m_objectSprite.setScale(m_SPRITE_SCALE, m_SPRITE_SCALE);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -31,9 +31,14 @@ private:
 	void processMousePressed(sf::Event const & t_event);
 
 	void randomiseForce();
-	void drawForce(int t_enemyTroops, int t_deployment);
+	void drawForce(int t_enemyTroops, int t_deployment, float t_distance);
 
 	void setupVisuals();
+
+	sf::Color const m_BACKGROUND_COLOR;
+	int const m_CHARACTER_SIZE;
+	int const m_ROCK_SIZE;
+	float const m_SPRITE_SCALE;
 
 	sf::RenderWindow m_window;
 	bool m_exitGame;
@@ -43,8 +48,8 @@ private:
 	sf::Texture m_spriteSheet;
 	sf::Sprite m_objectSprite;
 
-	sf::RenderTexture m_charactersTexture;
-	sf::Sprite m_charactersSprite;
+	sf::RenderTexture m_renderTexture;
+	sf::Sprite m_renderTextureSprite;
 
 };
 
