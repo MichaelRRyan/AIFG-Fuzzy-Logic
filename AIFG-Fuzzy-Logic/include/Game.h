@@ -30,12 +30,21 @@ private:
 	void processKeyPressed(sf::Event const& t_event);
 	void processMousePressed(sf::Event const & t_event);
 
-	void setupShapes();
+	void randomiseForce();
+	void drawForce(int t_enemyTroops, int t_deployment);
+
+	void setupVisuals();
 
 	sf::RenderWindow m_window;
 	bool m_exitGame;
 
-	sf::CircleShape m_circle;
+	sf::Vector2f m_worldSize;
+
+	sf::Texture m_spriteSheet;
+	sf::Sprite m_objectSprite;
+
+	sf::RenderTexture m_charactersTexture;
+	sf::Sprite m_charactersSprite;
 
 };
 
