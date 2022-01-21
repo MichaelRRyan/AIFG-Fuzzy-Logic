@@ -51,6 +51,9 @@ private:
 	sf::RenderTexture m_renderTexture;
 	sf::Sprite m_renderTextureSprite;
 
+	sf::Font m_arial;
+	sf::Text m_infoText;
+
 };
 
 #endif // !GAME

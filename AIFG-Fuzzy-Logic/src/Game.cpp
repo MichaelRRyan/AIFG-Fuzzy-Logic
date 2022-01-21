@@ -112,8 +112,6 @@ void Game::processMousePressed(sf::Event const& t_event)
 ////////////////////////////////////////////////////////////////////////////////
 void Game::randomiseForce()
 {
-	system("cls");
-
 	// Random number of enemy troops between 1 and 30.
 	int enemyTroops = rand() % 30 + 1;
 
@@ -122,9 +120,6 @@ void Game::randomiseForce()
 
 	int deploy =
 		TroopDeploymentCalculator::getDeploymentAmount(enemyTroops, range);
-
-	std::cout << enemyTroops << " enemy troops spotted at distance of " << range << std::endl;
-	std::cout << "Deploying " << deploy << " troops." << std::endl;
 
 	drawForce(enemyTroops, deploy, range);
 }
@@ -142,10 +137,8 @@ void Game::drawForce(int t_enemyTroops, int t_deployment, float t_distance)
 	{
 		m_objectSprite.setTextureRect({ m_ROCK_SIZE * (rand() % 3), 96, 
 										m_ROCK_SIZE, m_ROCK_SIZE });
-
 		m_objectSprite.setPosition({ (float)(rand() % (int)m_worldSize.x), 
 									 (float)(rand() % (int)m_worldSize.y) });
-
 		m_renderTexture.draw(m_objectSprite);
 	}
 
@@ -153,18 +146,16 @@ void Game::drawForce(int t_enemyTroops, int t_deployment, float t_distance)
 	size = (float)m_CHARACTER_SIZE * m_SPRITE_SCALE;
 	m_objectSprite.setTextureRect({ 0, 0, m_CHARACTER_SIZE, m_CHARACTER_SIZE });
 
+	// Works out the enemy army's position.
 	sf::Vector2f basePos{ 32.0f, 32.0f };
 	sf::Vector2f target{ m_worldSize.x / 4.0f, m_worldSize.y / 2.0f };
-	basePos += (target - basePos) * (t_distance / 70.0f);
+	basePos += (target - basePos) * (1.0f - (t_distance / 70.0f));
 
 	for (int i = 0; i < t_enemyTroops; ++i)
 	{
-		m_objectSprite.setPosition(basePos.x + size * (i % rowSize),
-								   basePos.y + size * (i / rowSize));
-
-		m_objectSprite.move(static_cast<float>(rand() % 20 - 10),
-							static_cast<float>(rand() % 20 - 10));
-
+		sf::Vector2f randomOffset{ (float)(rand() % 20 - 10), (float)(rand() % 20 - 10) };
+		m_objectSprite.setPosition(basePos.x + randomOffset.x + size * (i % rowSize),
+								   basePos.y + randomOffset.y + size * (i / rowSize));
 		m_renderTexture.draw(m_objectSprite);
 	}
 
@@ -173,18 +164,20 @@ void Game::drawForce(int t_enemyTroops, int t_deployment, float t_distance)
 
 	for (int i = 0; i < t_deployment; ++i)
 	{
+		sf::Vector2f randomOffset{ (float)(rand() % 20 - 10), (float)(rand() % 20 - 10) };
 		m_objectSprite.setTextureRect({ m_CHARACTER_SIZE + m_CHARACTER_SIZE * (rand() % 2), 0, 
 										m_CHARACTER_SIZE, m_CHARACTER_SIZE });
-
-		m_objectSprite.setPosition(basePos.x - size * (i % rowSize),
-								   basePos.y - size * (i / rowSize));
-
-		m_objectSprite.move(static_cast<float>(rand() % 20 - 10),
-							static_cast<float>(rand() % 20 - 10));
-
+		m_objectSprite.setPosition(basePos.x + randomOffset.x - size * (i % rowSize),
+								   basePos.y + randomOffset.y - size * (i / rowSize));
 		m_renderTexture.draw(m_objectSprite);
 	}
 
+	m_infoText.setString(std::to_string(t_enemyTroops)
+		+ " enemy troops spotted at distance of " + std::to_string(t_distance)
+		+ "\nDeploying " + std::to_string(t_deployment) + " troops."
+		+ "\n\n<Mouse click to randomise, Esc to exit>");
+
+	m_renderTexture.draw(m_infoText);
 	m_renderTexture.display();
 }
 
@@ -197,6 +190,16 @@ void Game::setupVisuals()
 		m_objectSprite.setTexture(m_spriteSheet);
 
 	m_objectSprite.setScale(m_SPRITE_SCALE, m_SPRITE_SCALE);
+
+	if (!m_arial.loadFromFile("assets/fonts/arial.ttf"))
+		std::cout << "Error loading Arial font." << std::endl;
+	else
+		m_infoText.setFont(m_arial);
+
+	m_infoText.setPosition(32.0f, m_worldSize.y - 180.0f);
+	m_infoText.setFillColor(sf::Color::Black);
+	m_infoText.setOutlineColor(sf::Color::White);
+	m_infoText.setOutlineThickness(3.0f);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
